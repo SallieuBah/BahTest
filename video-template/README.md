@@ -16,3 +16,16 @@ Needs Node, Playwright (`npm i playwright`) and ffmpeg.
 - Put the voiceover in this folder and set `audio: "voice.mp3"` to merge it, or add it later in CapCut.
 - `hl` words must match exactly as written in the caption text (including punctuation).
 - Icons available: `ear`, `book`, `scale`, `mosque`, or `null`.
+
+## Multi-scene videos with an automatic voiceover
+See `motors.js`: a `scenes` array where each scene has its own board and `narration` sentences.
+- `*word*` highlights a word in the captions.
+- `{shown|spoken}` shows one text but speaks another, e.g. `{75 kW|seventy-five kilowatts}`.
+
+```
+pip install piper-tts        # offline neural TTS
+node narrate.js motors.js path/to/en-us-ryan-high.onnx   # makes motors.voice.wav + motors.timings.js
+node render.js motors.mp4 motors.js
+```
+Voices: https://github.com/rhasspy/piper/releases/tag/v0.0.2 (e.g. voice-en-us-ryan-high.tar.gz).
+Preview a config in the browser with `index.html?config=motors.js`.

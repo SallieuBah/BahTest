@@ -1,17 +1,17 @@
-// Usage: node render.js [output.mp4]
+// Usage: node render.js [output.mp4] [config.js]
 const { chromium } = require("playwright");
 const { execFileSync } = require("child_process");
 const fs = require("fs"), path = require("path");
 
 const FPS = 30, out = path.resolve(process.argv[2] || "output.mp4");
-const frames = path.join(__dirname, ".frames");
+const cfg = process.argv[3] || "config.js", frames = path.join(__dirname, ".frames");
 
 (async () => {
   fs.rmSync(frames, { recursive: true, force: true }); fs.mkdirSync(frames);
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
   await page.addInitScript(() => { window.RENDER_MODE = true; });
-  await page.goto("file://" + path.join(__dirname, "index.html"));
+  await page.goto("file://" + path.join(__dirname, "index.html") + "?config=" + encodeURIComponent(cfg));
   await page.evaluate(() => document.fonts.ready);
   const { duration, audio } = await page.evaluate(() => ({ duration: window.DURATION, audio: window.CONFIG.audio }));
   const total = Math.ceil(duration * FPS);
