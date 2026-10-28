@@ -1,0 +1,110 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500;1,600&family=Josefin+Sans:wght@700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#f7f4ec}
+#stage{position:relative;width:1080px;height:1920px;
+ background-color:#f7f4ec;
+ background-image:linear-gradient(#e3dfd4 1.5px,transparent 1.5px),linear-gradient(90deg,#e3dfd4 1.5px,transparent 1.5px);
+ background-size:36px 36px}
+svg{position:absolute;inset:0}
+.title{font:italic 600 66px 'Playfair Display',serif;fill:#222}
+.label{font:700 34px 'Josefin Sans',sans-serif;letter-spacing:3px;fill:#2a2a2a}
+.source{font:700 32px 'Josefin Sans',sans-serif;letter-spacing:4px;fill:#2a2a2a}
+.quote{font:italic 500 52px 'Playfair Display',serif;fill:#1d1d1d}
+#cap{position:absolute;left:60px;right:60px;top:1630px;text-align:center;
+ font:500 58px 'Playfair Display',serif;color:#3b3b3b;line-height:1.35}
+#cap span{display:inline-block;margin:0 9px;transition:none}
+#cap .hl{color:#1d1d1d;background:linear-gradient(transparent 45%,#f2c94c 45%,#f2c94c 88%,transparent 88%);padding:0 4px}
+#handle{position:absolute;left:0;right:0;top:1840px;text-align:center;font:700 28px 'Josefin Sans',sans-serif;color:#8a8a8a;letter-spacing:1px}
+</style></head><body>
+<div id="stage"><svg id="svg" viewBox="0 0 1080 1920">
+<defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></defs>
+</svg><div id="cap"></div><div id="handle"></div></div>
+<script src="config.js"></script>
+<script>
+const C = window.CONFIG, NS = "http://www.w3.org/2000/svg", svg = document.getElementById("svg");
+const el = (tag, attrs, parent = svg) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+const clamp = x => Math.max(0, Math.min(1, x)), ease = x => 1 - Math.pow(1 - clamp(x), 3);
+const anims = []; // {node, at, kind}
+let t0 = C.boardStart;
+
+// Title
+const title = el("text", {x: 540, y: 300, "text-anchor": "middle", class: "title"}); title.textContent = C.title;
+anims.push({node: title, at: 0.1, kind: "fade"});
+document.getElementById("handle").textContent = C.handle;
+
+// Labels
+const L = C.labels.length, lw = Math.min(230, (1000 - (L - 1) * 18) / L), lgap = (1000 - L * lw) / Math.max(1, L - 1);
+const labelPos = C.labels.map((txt, i) => {
+  const x = 40 + i * (lw + lgap), g = el("g", {});
+  el("rect", {x: x + 4, y: 636, width: lw, height: 84, rx: 6, fill: "#2a2a2a", opacity: .85, filter: "url(#rough)"}, g);
+  el("rect", {x, y: 630, width: lw, height: 84, rx: 6, fill: "#ece4d3", stroke: "#2a2a2a", "stroke-width": 4, filter: "url(#rough)"}, g);
+  const tx = el("text", {x: x + lw / 2, y: 685, "text-anchor": "middle", class: "label"}, g); tx.textContent = txt;
+  anims.push({node: g, at: t0 + i * C.step * .5, kind: "pop"});
+  return {cx: x + lw / 2, y: 714};
+});
+t0 += L * C.step * .5 + C.step;
+
+// Cards
+const N = C.cards.length, cgap = 40, cw = (1040 - (N - 1) * cgap) / N, ctop = 850, ch = 690;
+const ICONS = {
+  ear: '<path d="M-30 40 C-60 -20 -10 -70 30 -40 C60 -15 40 20 20 40 C5 55 15 75 -5 85 C-25 95 -40 80 -40 70" fill="none" stroke="#1d1d1d" stroke-width="7" stroke-linecap="round"/><path d="M65 -10 Q75 15 65 40 M85 -20 Q98 15 85 50 M105 -28 Q120 15 105 58" fill="none" stroke="#1d1d1d" stroke-width="4" stroke-linecap="round"/>',
+  book: '<path d="M-95 -40 L0 -25 L95 -40 L95 50 L0 65 L-95 50 Z" fill="#2f5d46" stroke="#1d1d1d" stroke-width="5"/><path d="M-82 -48 L0 -33 L82 -48 L82 40 L0 55 L-82 40 Z" fill="#fff" stroke="#1d1d1d" stroke-width="4"/><path d="M0 -33 V55 M-65 -20 L-15 -12 M-65 0 L-15 8 M-65 20 L-15 28 M15 -12 L65 -20 M15 8 L65 0 M15 28 L65 20" stroke="#1d1d1d" stroke-width="3"/>',
+  scale: '<path d="M0 -60 V60 M-40 60 H40 M-80 -40 H80 M-80 -40 L-105 15 H-55 Z M80 -40 L55 15 H105 Z" fill="none" stroke="#1d1d1d" stroke-width="6" stroke-linejoin="round"/>',
+  mosque: '<path d="M-60 60 V0 Q0 -70 60 0 V60 Z M-100 60 V-50 M100 60 V-50 M-110 60 H110" fill="none" stroke="#1d1d1d" stroke-width="6" stroke-linejoin="round"/><path d="M-100 -50 L-100 -70 M100 -50 L100 -70" stroke="#1d1d1d" stroke-width="10" stroke-linecap="round"/>'
+};
+const cardPos = C.cards.map((c, i) => {
+  const x = 20 + i * (cw + cgap), g = el("g", {});
+  el("rect", {x: x + 6, y: ctop + 8, width: cw, height: ch, rx: 8, fill: "#e6e1d4"}, g);
+  el("rect", {x, y: ctop, width: cw, height: ch, rx: 8, fill: "#fbfaf6", stroke: "#1d1d1d", "stroke-width": 5, filter: "url(#rough)"}, g);
+  for (let y = ctop + 180; y < ctop + ch - 20; y += 90) el("line", {x1: x + 8, x2: x + cw - 8, y1: y, y2: y, stroke: "#dedad0", "stroke-width": 2}, g);
+  el("line", {x1: x + 75, x2: x + 75, y1: ctop + 8, y2: ctop + ch - 8, stroke: "#e8b7b7", "stroke-width": 2}, g);
+  const fs = cw < 520 ? (c.source.length > 14 ? 26 : 32) : 34;
+  const st = el("text", {x: x + cw / 2, y: ctop + 90, "text-anchor": "middle", class: "source", style: `font-size:${fs}px`}, g); st.textContent = c.source;
+  el("path", {d: `M${x + 40} ${ctop + 115} Q${x + cw / 2} ${ctop + 110} ${x + cw - 40} ${ctop + 117}`, stroke: "#2f5d46", "stroke-width": 6, fill: "none", "stroke-linecap": "round"}, g);
+  const lines = c.quote.split("\n"), qfs = Math.min(60, (cw - 80) / Math.max(...lines.map(s => s.length)) * 1.9);
+  lines.forEach((ln, j) => { const q = el("text", {x: x + cw / 2 + 20, y: ctop + 245 + j * 90, "text-anchor": "middle", class: "quote", style: `font-size:${qfs}px`}, g); q.textContent = ln; });
+  if (c.icon && ICONS[c.icon]) { const ic = el("g", {transform: `translate(${x + cw / 2 + 20} ${ctop + ch - 130})`}, g); ic.innerHTML = ICONS[c.icon]; }
+  anims.push({node: g, at: t0 + i * C.step, kind: "rise"});
+  return {x, cx: x + cw / 2, n: 0};
+});
+t0 += N * C.step + C.step * .5;
+
+// Connectors
+const perCard = {}; C.links.forEach(([, ci]) => perCard[ci] = (perCard[ci] || 0) + 1);
+const used = {};
+C.links.forEach(([li, ci], k) => {
+  const a = labelPos[li], cp = cardPos[ci], m = perCard[ci], idx = used[ci] = (used[ci] ?? -1) + 1;
+  const ex = cp.cx + (idx - (m - 1) / 2) * 40, ey = ctop + 150 + (idx % 2) * 6;
+  const d = `M${a.cx} ${a.y} C${a.cx} ${a.y + 120} ${ex} ${ey - 160} ${ex} ${ey}`;
+  const g = el("g", {});
+  const p = el("path", {d, fill: "none", stroke: "#2a2a2a", "stroke-width": 4, "stroke-linecap": "round"}, g);
+  const dot = el("circle", {cx: ex, cy: ey, r: 9, fill: "#1d1d1d"}, g);
+  const len = p.getTotalLength(); p.style.strokeDasharray = len;
+  anims.push({node: g, at: t0 + k * C.step * .7, kind: "draw", path: p, len, dot});
+});
+const boardEnd = t0 + C.links.length * C.step * .7 + 1;
+
+// Captions
+const cap = document.getElementById("cap");
+const lastCap = C.captions.length ? C.captions[C.captions.length - 1].end : 0;
+window.DURATION = C.duration || Math.max(lastCap, boardEnd) + 1.5;
+
+window.render = function (t) {
+  for (const a of anims) {
+    const p = ease((t - a.at) / 0.6);
+    if (a.kind === "fade") a.node.style.opacity = p;
+    if (a.kind === "pop") { a.node.style.opacity = p; a.node.style.transformOrigin = "center"; a.node.style.transformBox = "fill-box"; a.node.style.transform = `scale(${0.7 + 0.3 * p})`; }
+    if (a.kind === "rise") { a.node.style.opacity = p; a.node.style.transform = `translateY(${(1 - p) * 60}px)`; }
+    if (a.kind === "draw") { const q = ease((t - a.at) / 0.9); a.node.style.opacity = q > 0 ? 1 : 0; a.path.style.strokeDashoffset = a.len * (1 - q); a.dot.style.opacity = q > .95 ? 1 : 0; }
+  }
+  const c = C.captions.find(c => t >= c.start && t < c.end);
+  if (!c) { cap.innerHTML = ""; return; }
+  const words = c.text.split(/\s+/), hl = c.hl || [], per = Math.min(0.35, (c.end - c.start) * 0.7 / words.length);
+  const shown = Math.min(words.length, Math.floor((t - c.start) / per) + 1);
+  cap.innerHTML = words.slice(0, shown).map(w => `<span class="${hl.includes(w) ? "hl" : ""}">${w.replace(/</g, "&lt;")}</span>`).join("");
+};
+
+// Live preview when opened in a browser
+if (!window.RENDER_MODE) { const s = performance.now(); (function loop() { const t = (performance.now() - s) / 1000 % window.DURATION; render(t); requestAnimationFrame(loop); })(); }
+</script></body></html>
