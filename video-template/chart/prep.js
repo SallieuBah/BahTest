@@ -1,9 +1,9 @@
-// Usage: node stock/prep.js prices.csv stock/data.js
-// Turns a monthly price CSV into a data file for stock/index.html.
+// Usage: node stock/prep.js prices.csv chart/prices.js
+// Turns a monthly price CSV into a data file for chart/index.html.
 // Accepts Yahoo-style "Date,Open,High,Low,Close,Adj Close,Volume" (uses Adj Close, so
 // dividends count as reinvested) or a simple "Date,Close" file. Daily data is reduced to month-end.
 const fs = require("fs");
-const [src, out = "stock/data.js"] = process.argv.slice(2);
+const [src, out = "chart/prices.js"] = process.argv.slice(2);
 if (!src) { console.error("Usage: node stock/prep.js prices.csv [out.js]"); process.exit(1); }
 const rows = fs.readFileSync(src, "utf8").trim().split(/\r?\n/);
 const head = rows.shift().split(",").map(h => h.trim().toLowerCase());

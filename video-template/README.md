@@ -30,15 +30,28 @@ node render.js motors.mp4 motors.js
 Voices: https://github.com/rhasspy/piper/releases/tag/v0.0.2 (e.g. voice-en-us-ryan-high.tar.gz).
 Preview a config in the browser with `index.html?config=motors.js`.
 
-## "If you invested $100 every month" stock videos
-Animated DCA chart (portfolio value vs. total invested, month counter, stat cards) for any stock, in `stock/`.
-1. Download monthly (or daily) price history as CSV, e.g. Yahoo Finance → Historical Data → Download.
-   With an `Adj Close` column, dividends count as reinvested.
-2. `node stock/prep.js SAHOL.IS.csv stock/sahol.js`
-3. Edit `stock/config.js`: `name`, `ticker`, `exchange`, `data: "sahol.js"`, `monthly`, `start`, `handle`.
-   For Turkish labels use `stock/config.tr.js` (or copy its `text` block for any language).
-4. Preview: open `stock/index.html` (or `stock/index.html?config=config.tr.js`).
-5. Render: `node render.js sahol.mp4 config.js stock/index.html`
+## Animated data-chart videos (any topic)
+`chart/index.html` turns numbers into a Shorts-style video: big title, a counter (month/year), lines that draw
+themselves with a rescaling axis, 4 stat cards and an optional extra row. Each video is one config file:
 
-`stock/demo-data.js` holds made-up prices so the template runs as-is; don't publish it as real data.
-Returns are in the price's own currency: use USD-priced data (or convert first) if you want USD results.
+| Preset | What it shows |
+|---|---|
+| `chart/stock.js` | "If you invested $100 every month" in a stock (prices from a CSV, see below) |
+| `chart/savings.js` | Compound interest vs. cash under the mattress |
+| `chart/habit.js` | What a daily habit costs, vs. investing that money |
+| `chart/custom.js` | Blank starter: paste your own numbers for any topic |
+
+Make a new one: copy a preset, then edit
+- `title`, `tags`, `subtitle`, `footer` (always cite your source), `handle`
+- `rows`: `[{ label, key1: number, key2: number }]`, or a function that computes them
+- `series`: which keys to draw (first is the glowing main line; `fill: true` adds the gradient)
+- `cards` / `extra`: `{ label, value: cur => number, format: "money" | "percent" | "number" | {prefix, suffix, decimals}, sign }`
+  (`cur` holds the current, smoothly interpolated value of every key, plus `index`)
+- `pointsPerSecond`, `hold`, `axis`, `currency`, `locale` (e.g. `"tr-TR"`), optional `period(label)` / `tick(row)`
+
+Preview: open `chart/index.html?config=savings.js`. Render: `node render.js savings.mp4 savings.js chart/index.html`
+
+Stock data: download price history as CSV (e.g. Yahoo Finance → Historical Data; `Adj Close` = dividends reinvested),
+run `node chart/prep.js SAHOL.IS.csv chart/sahol.js`, and set `scripts: ["sahol.js"]` in `chart/stock.js`.
+`chart/demo-prices.js` is made-up data so the preset runs as-is; don't publish it as real.
+Returns are in the price's own currency.

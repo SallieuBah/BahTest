@@ -1,0 +1,103 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#0b1116}
+#stage{position:relative;width:1080px;height:1920px;font-family:Montserrat,sans-serif;color:#e8eef2;
+ background:radial-gradient(ellipse at 50% 0%,#16232b 0%,#0b1116 70%)}
+.c{position:absolute;left:40px;right:40px;text-align:center}
+#name{top:150px;font-weight:900;font-size:92px;letter-spacing:2px;line-height:1.05;white-space:nowrap}
+#sub1{top:290px;font-weight:500;font-size:34px;letter-spacing:6px;color:#9fb0ba}
+#sub2{top:350px;font-weight:500;font-size:42px;color:#d5dde2}
+#period{top:440px;font-weight:900;font-size:92px}
+#legend{top:560px;font-size:30px;color:#c7d2d8}
+#legend i{display:inline-block;width:30px;height:9px;border-radius:5px;margin:0 12px 6px 40px;vertical-align:middle}
+svg{position:absolute;left:0;top:0}
+.ax{font:500 26px Montserrat;fill:#6f8290}
+.card{position:absolute;width:466px;height:150px;border-radius:22px;background:#141e25;border:1.5px solid #1f2c35;box-sizing:border-box;padding:26px 30px}
+.card b{display:block;font-weight:700;font-size:28px;letter-spacing:4px;color:#9fb0ba;white-space:nowrap;overflow:hidden}
+.card span{display:block;font-weight:800;font-size:70px;margin-top:6px;white-space:nowrap}
+#extraL{left:50px;top:1690px;position:absolute;font-weight:700;font-size:30px;letter-spacing:4px;color:#9fb0ba}
+#extraV{right:50px;top:1680px;position:absolute;font-weight:800;font-size:44px}
+#foot{top:1780px;font-size:24px;color:#5e6f7a}
+#handle{top:1830px;font-weight:700;font-size:30px;color:#7d909c}
+</style></head><body>
+<div id="stage">
+ <div class="c" id="name"></div><div class="c" id="sub1"></div><div class="c" id="sub2"></div>
+ <div class="c" id="period"></div><div class="c" id="legend"></div>
+ <svg id="svg" width="1080" height="1920"></svg><div id="cards"></div>
+ <div id="extraL"></div><div id="extraV"></div>
+ <div class="c" id="foot"></div><div class="c" id="handle"></div>
+</div>
+<script>const Q = new URLSearchParams(location.search); document.write('<script src="' + (Q.get("config") || "stock.js") + '"><\/script>');</script>
+<script>(CONFIG.scripts || []).forEach(s => document.write('<script src="' + s + '"><\/script>'));</script>
+<script>
+// Generic animated "data story" chart. A config gives:
+//   rows: [{ label, <key>: number, ... }] (or a function returning them),
+//   series: [{ key, label, color, fill? }], cards / extra: [{ label, value: cur => number, format, sign? }].
+const C = CONFIG, $ = id => document.getElementById(id);
+const rows = typeof C.rows === "function" ? C.rows() : C.rows, N = rows.length;
+const play = N / (C.pointsPerSecond || 8);
+window.DURATION = play + (C.hold ?? 4);
+
+const num = (v, d = 0) => v.toLocaleString(C.locale || "en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+// format: "money" | "percent" | "number" | { prefix, suffix, decimals }
+const fmt = (v, f = "number", sign) => {
+  const o = typeof f === "object" ? f : { money: { prefix: C.currency ?? "$" }, percent: { suffix: "%", decimals: 1 } }[f] || {};
+  const s = sign ? (v >= 0 ? "+" : "−") : v < 0 ? "−" : "";
+  return s + (o.prefix || "") + num(Math.abs(v), o.decimals || 0) + (o.suffix || "");
+};
+const short = v => v >= 1e9 ? num(v / 1e9, 1) + "B" : v >= 1e6 ? num(v / 1e6, v % 1e6 ? 1 : 0) + "M" : v >= 1e3 ? num(v / 1e3, v % 1e3 ? 1 : 0) + "k" : num(v, v < 10 && v % 1 ? 1 : 0);
+const axisFmt = v => { const o = typeof C.axis === "object" ? C.axis : C.axis === "money" ? { prefix: C.currency ?? "$" } : C.axis === "percent" ? { suffix: "%" } : {}; return (o.prefix || "") + short(v) + (o.suffix || ""); };
+const isMonth = l => /^\d{4}-\d\d$/.test(l);
+const periodText = l => C.period ? C.period(l) : isMonth(l)
+  ? new Date(+l.slice(0, 4), +l.slice(5) - 1, 1).toLocaleString(C.locale || "en-US", { month: "long", year: "numeric" }).toLocaleUpperCase(C.locale) : String(l);
+const tickText = (r, i) => C.tick ? C.tick(r, i) : isMonth(r.label) ? (r.label.endsWith("-01") ? r.label.slice(0, 4) : null) : String(r.label);
+const good = C.goodColor || "#2ee59d", bad = C.badColor || "#ff5c6c";
+
+$("name").textContent = C.title;
+$("sub1").textContent = C.tags || ""; $("sub2").textContent = C.subtitle || "";
+$("foot").textContent = C.footer || ""; $("handle").textContent = C.handle || "";
+$("legend").innerHTML = C.series.map(s => `<i style="background:${s.color}"></i>${s.label}`).join("");
+$("cards").innerHTML = (C.cards || []).slice(0, 4).map((c, i) =>
+  `<div class="card" style="left:${i % 2 ? 564 : 50}px;top:${i < 2 ? 1300 : 1480}px"><b>${c.label}</b><span id="cv${i}" style="color:${c.color || "#e8eef2"}"></span></div>`).join("");
+if (C.extra) $("extraL").textContent = C.extra.label;
+
+const X0 = 40, X1 = 1000, Y0 = 640, Y1 = 1220; // chart box
+window.render = t => {
+  for (let fs = parseInt(getComputedStyle($("name")).fontSize); $("name").scrollWidth > 1000 && fs > 40;) $("name").style.fontSize = (fs -= 2) + "px"; // long titles shrink to one line
+  const f = Math.min(1, t / play) * (N - 1), k = Math.floor(f), fr = f - k;
+  const cur = { label: rows[Math.round(f)].label, index: f };
+  for (const key in rows[0]) if (typeof rows[0][key] === "number")
+    cur[key] = k + 1 < N ? rows[k][key] + (rows[k + 1][key] - rows[k][key]) * fr : rows[k][key];
+  // y-axis follows the running max so the lines always fit
+  const yMin = C.yMin ?? 0;
+  const yMax = Math.max(...rows.slice(0, k + 2).flatMap(r => C.series.map(s => r[s.key]))) * 1.08 || 1;
+  const x = i => X0 + (X1 - X0) * (f > 0 ? i / f : 0), y = v => Y1 - (Y1 - Y0) * (v - yMin) / (yMax - yMin || 1);
+  const line = key => { let d = ""; for (let i = 0; i <= k; i++) d += (i ? "L" : "M") + x(i).toFixed(1) + " " + y(rows[i][key]).toFixed(1); return d + `L${x(f).toFixed(1)} ${y(cur[key]).toFixed(1)}`; };
+  const step = (() => { const r = (yMax - yMin) / 3, e = 10 ** Math.floor(Math.log10(r)), q = r / e; return (q <= 1 ? 1 : q <= 2 ? 2 : q <= 5 ? 5 : 10) * e; })();
+  let g = `<defs><filter id="glow"><feGaussianBlur stdDeviation="6"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  for (let v = Math.ceil(yMin / step) * step + (yMin % step ? 0 : step); v < yMax; v += step)
+    g += `<line x1="${X0}" x2="${X1}" y1="${y(v)}" y2="${y(v)}" stroke="#1c2a33" stroke-width="2"/><text class="ax" x="${X0}" y="${y(v) - 12}">${axisFmt(v)}</text>`;
+  // x ticks, thinned to at most ~6 labels
+  const ticks = []; for (let i = 0; i <= k; i++) { const s = tickText(rows[i], i); if (s != null) ticks.push([i, s]); }
+  const every = Math.max(1, Math.ceil(ticks.length / 6));
+  ticks.filter((_, j) => j % every === (ticks.length - 1) % every).forEach(([i, s]) =>
+    g += `<line x1="${x(i)}" x2="${x(i)}" y1="${Y1}" y2="${Y1 + 12}" stroke="#3a4a55" stroke-width="2"/><text class="ax" x="${x(i)}" y="${Y1 + 50}" text-anchor="middle">${s}</text>`);
+  g += `<line x1="${X0}" x2="${X1}" y1="${Y1}" y2="${Y1}" stroke="#2a3944" stroke-width="2"/>`;
+  C.series.forEach((s, j) => {
+    const d = line(s.key), ex = x(f), ey = y(cur[s.key]), main = j === 0;
+    if (s.fill) g += `<linearGradient id="f${j}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s.color}" stop-opacity=".35"/><stop offset="1" stop-color="${s.color}" stop-opacity="0"/></linearGradient><path d="${d}L${ex} ${Y1}L${X0} ${Y1}Z" fill="url(#f${j})"/>`;
+    g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${main ? 7 : 5}" stroke-linejoin="round"${main ? ' filter="url(#glow)"' : ""}/>`
+      + (main ? `<circle cx="${ex}" cy="${ey}" r="20" fill="${s.color}" opacity=".3"/><circle cx="${ex}" cy="${ey}" r="11" fill="${s.color}" stroke="#fff" stroke-opacity=".8" stroke-width="4"/>` : `<circle cx="${ex}" cy="${ey}" r="10" fill="${s.color}"/>`);
+  });
+  $("svg").innerHTML = g;
+  $("period").textContent = periodText(cur.label);
+  (C.cards || []).slice(0, 4).forEach((c, i) => {
+    const v = c.value(cur), el = $("cv" + i);
+    el.textContent = fmt(v, c.format, c.sign);
+    if (c.sign) el.style.color = v >= 0 ? good : bad;
+  });
+  if (C.extra) $("extraV").textContent = fmt(C.extra.value(cur), C.extra.format);
+};
+if (!window.RENDER_MODE) { const t0 = performance.now(); (function loop() { render(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); })(); }
+</script></body></html>
