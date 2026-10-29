@@ -39,6 +39,7 @@ themselves with a rescaling axis, 4 stat cards and an optional extra row. Each v
 | `chart/stock.js` | "If you invested $100 every month" in a stock (prices from a CSV, see below) |
 | `chart/savings.js` | Compound interest vs. cash under the mattress |
 | `chart/habit.js` | What a daily habit costs, vs. investing that money |
+| `chart/motor-cost.js` | Lifetime cost of an industrial motor: electricity vs. purchase price, IE4 vs IE2 savings |
 | `chart/custom.js` | Blank starter: paste your own numbers for any topic |
 
 Make a new one: copy a preset, then edit
