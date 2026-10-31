@@ -1,7 +1,7 @@
 import json, re, subprocess, sys
 SRC, OUT_DIR = sys.argv[1], sys.argv[2]
 scenes = [
- [(3.42,5.52,"Hi, I'm Mohamed,"),([(134.80,135.02),(8.82,11.40)],None,"your *electrical & electronics* engineer.")],
+ [([(3.30,5.66),(134.80,135.02),(8.82,11.40)],None,"Hi, I'm Mohamed, your *electrical & electronics* engineer.")],
  [(12.14,14.34,"Why *high-efficiency* motors?"),(15.48,17.84,"Why do *high-efficiency* motors matter?"),(18.84,22.45,"Pumps, fans, compressors and conveyors"),(23.03,25.28,"are all driven by electric motors."),(26.43,28.90,"Together, they use about *two thirds*"),(30.22,32.30,"of all industrial electricity."),(33.58,37.99,"Over a motor's life, the purchase price is small."),(38.36,42.58,"*Energy* is more than *90%* of the total cost.")],
  [(44.04,45.28,"So where does the energy go?"),(46.52,51.17,"Every motor loses power in its *copper* windings,"),(51.85,56.78,"its *iron* core, through *friction*, and as stray losses."),(58.81,63.67,"In a standard motor, all of that turns into *heat*."),(65.06,68.88,"High-efficiency designs use more copper,"),(69.40,73.71,"thinner low-loss steel and a better fan,"),(74.10,77.30,"cutting losses by a *third* or more.")],
  [(78.44,79.80,"Efficiency classes"),(81.53,86.12,"Motors are graded on one international scale,",[(82.59,82.95)]),(86.85,91.37,"from *IE1*, standard, up to *IE4*,"),(92.17,93.43,"*super premium*.",[(92.53,92.92)]),(94.87,99.89,"In Europe, *IE3* has been the *minimum*"),(100.48,103.69,"for most motors since 2021,"),(104.43,111.28,"and *IE4* is now required from 75 to 200 kW.")],
@@ -32,7 +32,7 @@ for si, sc in enumerate(scenes):
 fl, labels, k = [], [], 0
 for p in parts:
     if isinstance(p, tuple):
-        fl.append(f"[0:a]atrim={p[0]:.3f}:{p[1]:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,afade=t=out:st={p[1]-p[0]-0.03:.3f}:d=0.03[p{k}]")
+        fl.append(f"[0:a]atrim={p[0]:.3f}:{p[1]:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.008,afade=t=out:st={p[1]-p[0]-0.012:.3f}:d=0.012[p{k}]")
     else:
         fl.append(f"{p}[p{k}]")
     labels.append(f"[p{k}]"); k += 1
