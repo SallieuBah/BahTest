@@ -9,9 +9,9 @@ window.CONFIG = {
   scenes: [
     {
       title: "Hi, I'm Mohamed",
-      labels: ["ENERGY AUDIT", "ELECTRICAL", "ELECTRONICS"],
-      cards: [{ source: "MOHAMED SALLIEU BAH", quote: "Energy Audit\n& Project\nEngineer", icon: "bolt" }],
-      links: [[0, 0], [1, 0], [2, 0]],
+      labels: ["ELECTRICAL", "ELECTRONICS"],
+      cards: [{ source: "MOHAMED SALLIEU BAH", quote: "Electrical &\nElectronics\nEngineer", icon: "bolt" }],
+      links: [[0, 0], [1, 0]],
       narration: []
     },
     {
