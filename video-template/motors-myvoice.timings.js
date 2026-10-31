@@ -160,13 +160,13 @@ window.TIMINGS = {
     },
     {
      "start": 74.54,
-     "end": 79.31,
+     "end": 78.95,
      "text": "Motors are graded on one international scale,",
      "hl": []
     },
     {
-     "start": 79.73,
-     "end": 84.43,
+     "start": 79.37,
+     "end": 84.07,
      "text": "from IE1, standard, up to IE4,",
      "hl": [
       "IE1",
@@ -174,8 +174,8 @@ window.TIMINGS = {
      ]
     },
     {
-     "start": 84.85,
-     "end": 86.29,
+     "start": 84.49,
+     "end": 85.54,
      "text": "super premium.",
      "hl": [
       "super",
@@ -183,8 +183,8 @@ window.TIMINGS = {
      ]
     },
     {
-     "start": 86.71,
-     "end": 91.91,
+     "start": 85.96,
+     "end": 91.16,
      "text": "In Europe, IE3 has been the minimum",
      "hl": [
       "IE3",
@@ -192,46 +192,46 @@ window.TIMINGS = {
      ]
     },
     {
-     "start": 92.33,
-     "end": 95.72,
+     "start": 91.58,
+     "end": 94.97,
      "text": "for most motors since 2021,",
      "hl": []
     },
     {
-     "start": 96.14,
-     "end": 103.17,
+     "start": 95.39,
+     "end": 102.42,
      "text": "and IE4 is now required from 75 to 200 kW.",
      "hl": [
       "IE4"
      ]
     }
    ],
-   "end": 103.92
+   "end": 103.17
   },
   {
-   "start": 103.92000000000004,
+   "start": 103.17000000000004,
    "captions": [
     {
-     "start": 104.64,
-     "end": 105.93,
+     "start": 103.89,
+     "end": 105.18,
      "text": "The savings math",
      "hl": []
     },
     {
-     "start": 106.35,
-     "end": 108.83,
+     "start": 105.6,
+     "end": 108.08,
      "text": "So how much can you actually save?",
      "hl": []
     },
     {
-     "start": 109.25,
-     "end": 113.12,
+     "start": 108.5,
+     "end": 112.37,
      "text": "Divide the shaft power by each motor's efficiency.",
      "hl": []
     },
     {
-     "start": 113.54,
-     "end": 116.5,
+     "start": 112.79,
+     "end": 115.75,
      "text": "The difference is the power you stop wasting.",
      "hl": [
       "stop",
@@ -239,8 +239,8 @@ window.TIMINGS = {
      ]
     },
     {
-     "start": 116.92,
-     "end": 121.62,
+     "start": 116.17,
+     "end": 120.87,
      "text": "Multiply it by your running hours and your energy price.",
      "hl": [
       "running",
@@ -250,26 +250,26 @@ window.TIMINGS = {
      ]
     },
     {
-     "start": 122.04,
-     "end": 124.21,
+     "start": 121.29,
+     "end": 123.46,
      "text": "A 75 kW motor",
      "hl": []
     },
     {
-     "start": 124.63,
-     "end": 129.14,
+     "start": 123.88,
+     "end": 128.39,
      "text": "at 75% load, running 6,000 hours a year,",
      "hl": []
     },
     {
-     "start": 129.56,
-     "end": 133.67,
+     "start": 128.81,
+     "end": 132.92,
      "text": "upgraded from IE1 to IE4,",
      "hl": []
     },
     {
-     "start": 134.09,
-     "end": 137.8,
+     "start": 133.34,
+     "end": 137.05,
      "text": "saves about 11,300 kWh.",
      "hl": [
       "11,300",
@@ -277,34 +277,34 @@ window.TIMINGS = {
      ]
     },
     {
-     "start": 138.22,
-     "end": 143.85,
+     "start": 137.47,
+     "end": 143.1,
      "text": "At €0.15 per kWh, that is around",
      "hl": []
     },
     {
-     "start": 144.27,
-     "end": 147.09,
+     "start": 143.52,
+     "end": 146.34,
      "text": "€1,700 every year.",
      "hl": [
       "€1,700"
      ]
     }
    ],
-   "end": 147.84
+   "end": 147.09
   },
   {
-   "start": 147.84000000000023,
+   "start": 147.09000000000023,
    "captions": [
     {
-     "start": 148.56,
-     "end": 153.75,
+     "start": 147.81,
+     "end": 153.0,
      "text": "To get the most out of it, size the motor correctly,",
      "hl": []
     },
     {
-     "start": 154.17,
-     "end": 158.13,
+     "start": 153.42,
+     "end": 157.38,
      "text": "and add a variable speed drive on pumps and fans.",
      "hl": [
       "variable",
@@ -313,28 +313,28 @@ window.TIMINGS = {
      ]
     },
     {
-     "start": 158.55,
-     "end": 161.46,
+     "start": 157.8,
+     "end": 160.71,
      "text": "Cutting their speed by just 20%",
      "hl": []
     },
     {
-     "start": 161.88,
-     "end": 164.57,
+     "start": 161.13,
+     "end": 163.82,
      "text": "can cut power by nearly half.",
      "hl": [
       "half"
      ]
     },
     {
-     "start": 164.99,
-     "end": 170.88,
+     "start": 164.24,
+     "end": 170.13,
      "text": "Pair it with efficient belts or direct drive, and good maintenance.",
      "hl": []
     },
     {
-     "start": 171.3,
-     "end": 176.96,
+     "start": 170.55,
+     "end": 176.21,
      "text": "The result: payback often within 1 to 3 years,",
      "hl": [
       "1",
@@ -344,14 +344,14 @@ window.TIMINGS = {
      ]
     },
     {
-     "start": 177.38,
-     "end": 180.51,
+     "start": 176.63,
+     "end": 179.76,
      "text": "cooler motors that last longer,",
      "hl": []
     },
     {
-     "start": 180.93,
-     "end": 182.73,
+     "start": 180.18,
+     "end": 181.98,
      "text": "and lower emissions.",
      "hl": [
       "lower",
@@ -359,7 +359,7 @@ window.TIMINGS = {
      ]
     }
    ],
-   "end": 184.73
+   "end": 183.98
   }
  ]
 };
